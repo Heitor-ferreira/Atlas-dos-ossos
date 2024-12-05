@@ -26,3 +26,14 @@ code {
     text-align: center;
   }
 }
+
+.index{
+  background-color: blue;
+  width: 100%;
+}
+
+.bone-list{
+  background-color: red;
+  width: 100%;
+
+}
