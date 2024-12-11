@@ -12,16 +12,16 @@ export default function Card({
     const { addItemToCart } = useContext(Context);
 
     return (
-        <article className="product">
-            <img src={thumbnail} alt={title} />
-            <div className="product-content">
+        <article className="card-body">
+            <img src={thumbnail} alt={title} id="img-card" />
+            <div className="card-content">
                 <div>
                     <h3>{title}</h3>
-                    <p className="product-price">$ {price}</p>
-                    <p>{description}</p>
                 </div>
-                <p className="product-actions">
-                    <button onClick={() => addItemToCart(id)}>Add to Cart</button>
+                <p className="card-actions">
+                    <button onClick={() => addItemToCart(id)}>Saiba Mais</button>
+                    <button onClick={() => addItemToCart(id)}>Favoritar</button>
+
                 </p>
             </div>
         </article>

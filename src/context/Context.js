@@ -5,6 +5,7 @@ export const Context = createContext({
     products: [],
     loading: false,
     error: "",
+    total: 0,
     addItemToCart: () => { },
     updateItemQuantity: () => { },
     subItemToCart: () => { }
@@ -15,6 +16,7 @@ export default function ContextProvider({ children }) {
     const [products, setProducts] = useState([]);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const [total, setTotal] = useState(0);
 
     useEffect(() => {
         async function fetchProducts() {
@@ -51,7 +53,10 @@ export default function ContextProvider({ children }) {
                     quantity: existingCartItem.quantity + 1,
                 }
                 updatedItems[existingCartItemIndex] = updatedItem;
-            } else {
+                setTotal((prevTotal) => prevTotal + existingCartItem.price);
+            }
+
+            else {
                 const product = action.payload.products.find(
                     (product) => product.id === action.payload.id
                 );
@@ -61,7 +66,9 @@ export default function ContextProvider({ children }) {
                     title: product.title,
                     price: product.price,
                     quantity: 1,
+
                 });
+                setTotal((prevTotal) => prevTotal + product.price);
             }
 
             return { items: updatedItems };
@@ -82,17 +89,14 @@ export default function ContextProvider({ children }) {
                     quantity: existingCartItem.quantity - 1,
                 }
                 updatedItems[existingCartItemIndex] = updatedItem;
-            } else {
-                const product = action.payload.products.find(
-                    (product) => product.id === action.payload.id
-                );
-                updatedItems.push({
-                    id: action.payload.id,
-                    thumbnail: product.thumbnail,
-                    title: product.title,
-                    price: product.price,
-                    quantity: 1,
-                });
+
+                if (updatedItem.quantity < 1) {
+                    updatedItems.splice(existingCartItemIndex, 1);
+                } else {
+                    updatedItems[existingCartItemIndex] = updatedItem;
+                }
+
+                setTotal((prevTotal) => prevTotal - existingCartItem.price);
             }
 
             return { items: updatedItems };
@@ -152,6 +156,7 @@ export default function ContextProvider({ children }) {
         products: products,
         loading: loading,
         error: error,
+        total: Math.abs(total.toFixed(2)),
         addItemToCart: handleAddItemToCart,
         updateItemQuantity: handleUpdateCartItemQuantity,
         subItemToCart: handleSubItemToCart
